@@ -1,3 +1,4 @@
+import datetime
 import telebot #pyTelegramBotAPI
 import logging
 from classes import Day, Group, Pair
@@ -6,20 +7,27 @@ logging.basicConfig(filename="colBot.log", filemode="w+", format='%(asctime)s - 
 
 bot = telebot.TeleBot("1238495590:AAEVXKiybdfvt5gcXiXGNheIyNRgGH3T6us", "HTML")
 
+days = []
+
 grp1 = Group("kp-181", [Pair("Д", "Ф"), Pair("Д", "Ф"), Pair("Ф", "С"), Pair("Ф", "С")])
 grp2 = Group("kp-182", [Pair("Ф", "С"), Pair("Ф", "С"), Pair("Д", "Ф"), Pair("Д", "Ф")])
-day1 = Day("2021-05-24", [grp1, grp2])
+days.append(Day("2021-05-24", [grp1, grp2]))
+days.append(Day("2021-05-25", [grp1, grp2]))
 
-def getAllTeacher(teacher): #Add check date, add get for time interval
-
-    retArray = []
-    for group in day1.Groups:
-        for pair in group.Pairs:
-            if pair.Teacher == teacher:
-                retArray.append({"Group": str(group), "Pair": group.Pairs.index(pair)+1})
+def getAllTeacher(teacher, dayOrdinal, interval = 0):
+    retArray = {}
+    for day in days:
+        if day.DayOrdinal == dayOrdinal or day.DayOrdinal in range(dayOrdinal, dayOrdinal+interval+1):
+            for group in day.Groups:
+                for pair in group.Pairs:
+                    if pair.Teacher == teacher:
+                        try:
+                            retArray[day.DayOrdinal].append({"Group": str(group), "Pair": group.Pairs.index(pair)+1})
+                        except KeyError:
+                            retArray[day.DayOrdinal] = [{"Group": str(group), "Pair": group.Pairs.index(pair)+1}]
     return retArray
 
-print(getAllTeacher("Ф"))
+print(getAllTeacher("Ф", datetime.date.today().toordinal(), 2))
 
 @bot.message_handler(commands=["getnext"])
 def getNext(message, call = None):
