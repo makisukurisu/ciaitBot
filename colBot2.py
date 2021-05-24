@@ -9,11 +9,6 @@ bot = telebot.TeleBot("1238495590:AAEVXKiybdfvt5gcXiXGNheIyNRgGH3T6us", "HTML")
 
 days = []
 
-grp1 = Group("kp-181", [Pair("Д", "Ф"), Pair("Д", "Ф"), Pair("Ф", "С"), Pair("Ф", "С")])
-grp2 = Group("kp-182", [Pair("Ф", "С"), Pair("Ф", "С"), Pair("Д", "Ф"), Pair("Д", "Ф")])
-days.append(Day("2021-05-24", [grp1, grp2]))
-days.append(Day("2021-05-25", [grp1, grp2]))
-
 def getAllTeacher(teacher, dayOrdinal, interval = 0):
     retArray = {}
     for day in days:
@@ -26,8 +21,6 @@ def getAllTeacher(teacher, dayOrdinal, interval = 0):
                         except KeyError:
                             retArray[day.DayOrdinal] = [{"Group": str(group), "Pair": group.Pairs.index(pair)+1}]
     return retArray
-
-print(getAllTeacher("Ф", datetime.date.today().toordinal(), 2))
 
 @bot.message_handler(commands=["getnext"])
 def getNext(message, call = None):

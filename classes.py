@@ -64,17 +64,24 @@ class Pair():
     def __str__(self) -> str:
         return "{} - {} ({})".format(self.Name, self.Teacher, str(self.Group))
 
-# grp1 = Group("kp-181", [Pair("Д", "Ф"), Pair("Д", "Ф"), Pair("Ф", "С"), Pair("Ф", "С")])
-# grp2 = Group("kp-182", [Pair("Ф", "С"), Pair("Ф", "С"), Pair("Д", "Ф"), Pair("Д", "Ф")])
-# day1 = Day("2021-05-24", [grp1, grp2])
+days = []
 
-# def getAllTeacher(teacher):
+grp1 = Group("kp-181", [Pair("Д", "Ф"), Pair("Д", "Ф"), Pair("Ф", "С"), Pair("Ф", "С")])
+grp2 = Group("kp-182", [Pair("Ф", "С"), Pair("Ф", "С"), Pair("Д", "Ф"), Pair("Д", "Ф")])
+days.append(Day("2021-05-24", [grp1, grp2]))
+days.append(Day("2021-05-25", [grp1, grp2]))
 
-#     retArray = []
-#     for group in day1.Groups:
-#         for pair in group.Pairs:
-#             if pair.Teacher == teacher:
-#                 retArray.append({"Group": str(group), "Pair": group.Pairs.index(pair)+1})
-#     return retArray
+def getAllTeacher(teacher, dayOrdinal, interval = 0):
+    retArray = {}
+    for day in days:
+        if day.DayOrdinal == dayOrdinal or day.DayOrdinal in range(dayOrdinal, dayOrdinal+interval+1):
+            for group in day.Groups:
+                for pair in group.Pairs:
+                    if pair.Teacher == teacher:
+                        try:
+                            retArray[day.DayOrdinal].append({"Group": str(group), "Pair": group.Pairs.index(pair)+1})
+                        except KeyError:
+                            retArray[day.DayOrdinal] = [{"Group": str(group), "Pair": group.Pairs.index(pair)+1}]
+    return retArray
 
-# print(getAllTeacher("Ф"))
+print(getAllTeacher("Ф", datetime.date.today().toordinal(), 2))
